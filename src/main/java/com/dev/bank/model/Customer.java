@@ -7,10 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 public class Customer extends DateAudit {
@@ -86,7 +83,7 @@ public class Customer extends DateAudit {
     }
 
     public List<Account> getAccounts() {
-        return accounts;
+        return accounts == null ? null : new ArrayList<>(accounts);
     }
 
     public void setAccounts(List<Account> accounts) {
