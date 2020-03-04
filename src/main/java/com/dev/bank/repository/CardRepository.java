@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.UUID;
 
+@Repository
 public interface CardRepository extends JpaRepository<Card, UUID> {
     Card findCardByPAN(String PAN);
 }
