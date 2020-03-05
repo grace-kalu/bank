@@ -23,10 +23,8 @@ public class Account extends DateAudit {
 
     @NotNull
     @NotBlank
-
     @Size(min= 10, max= 10)
     private String accountNumber;
-
 
     @NotNull
     private Double balance;

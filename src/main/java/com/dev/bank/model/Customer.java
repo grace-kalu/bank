@@ -31,6 +31,11 @@ public class Customer extends DateAudit {
 
     @NotNull
     @NotBlank
+    @Email
+    private String phone;
+
+    @NotNull
+    @NotBlank
     private String address;
 
     @NotBlank
@@ -87,6 +92,14 @@ public class Customer extends DateAudit {
 
     public List<Account> getAccounts() {
         return accounts;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public void setAccounts(List<Account> accounts) {
