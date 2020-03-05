@@ -17,6 +17,8 @@ public class TokenOtp {
     @Column
     private String accountNumber;
     @Column
+    private Instant tokencreated;
+    @Column
     private Instant tokenexpiry;
 
     public Instant getTokenexpiry() {
@@ -28,6 +30,8 @@ public class TokenOtp {
     }
 
     public TokenOtp() {
+        this.tokencreated=Instant.now();
+        this.tokenexpiry=Instant.now().plusMillis(300000);
     }
     public TokenOtp(String accountNumber){
         this.accountNumber= accountNumber;

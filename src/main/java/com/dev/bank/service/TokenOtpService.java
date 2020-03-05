@@ -19,4 +19,5 @@ public class TokenOtpService {
     TokenOtp tokenOtp =  tokenOtpRepository.findByToken(token);
     return tokenOtp;
     }
+
 }
