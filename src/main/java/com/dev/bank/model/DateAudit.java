@@ -19,6 +19,7 @@ import java.time.Instant;
         allowGetters = true
 )
 public abstract class DateAudit implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -43,4 +44,6 @@ public abstract class DateAudit implements Serializable {
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+
 }
