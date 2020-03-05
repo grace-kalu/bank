@@ -37,17 +37,18 @@ package com.dev.bank.controller;
 import com.dev.bank.model.Account;
 import com.dev.bank.model.Card;
 import com.dev.bank.model.Customer;
+import com.dev.bank.model.TokenOtp;
 import com.dev.bank.repository.AccountRepository;
 import com.dev.bank.repository.CardRepository;
 import com.dev.bank.service.AccountService;
+import com.dev.bank.service.TokenOtpService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.Instant;
 import java.util.Optional;
 
 @RestController
@@ -56,9 +57,10 @@ public class AccountController {
     private AccountRepository accountRepository;
     @Autowired
     private CardRepository cardRepository;
-
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private TokenOtpService tokenOtpService;
 
     @GetMapping("/accounts")
     public ResponseEntity<?> getAllAccounts(
@@ -74,13 +76,36 @@ public class AccountController {
 
     }
 
+/* Route for creating a new account*/
     @PostMapping("/accounts")
     public ResponseEntity<String> createAccount(@Valid @RequestBody String accountNumber,
                                  @Valid @RequestBody Customer customer) {
+
+        /*Account created and token sent to the customer/user*/
        Account newAccount = accountService.createAccount(accountNumber, customer);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(newAccount.getAccountNumber());
+    }
+
+    /* Route for confirming a newly created account after token was sent and returned*/
+    @PostMapping("/account/confirmation")
+    public ResponseEntity<?> confirmAccount(
+            @RequestBody int token,
+            @RequestBody String accountNumber
+    ){
+        TokenOtp tokenOtp = tokenOtpService.findByToken(token);
+        if (tokenOtp==null){
+            accountRepository.deleteByAccountNumber(
+                  //  tokenOtp.getAccountNumber()
+                    accountNumber
+            );
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Token has expired");
+            //if(Instant.now() )
+        }
+return ResponseEntity.status(HttpStatus.OK).body("User account is authenticated and verified");
     }
 
     @PutMapping("/payments")

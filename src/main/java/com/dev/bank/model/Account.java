@@ -38,6 +38,9 @@ public class Account extends DateAudit {
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private Card card;
 
+    @Column(nullable = true)
+    private int token;
+
     public Account() {
     }
     public Account(String accountNumber, Customer customer){
@@ -49,6 +52,14 @@ public class Account extends DateAudit {
 
     public UUID getId() {
         return id;
+    }
+
+    public int getToken() {
+        return token;
+    }
+
+    public void setToken(int token) {
+        this.token = token;
     }
 
     public void setId(UUID id) {

@@ -26,6 +26,17 @@ public class Customer extends DateAudit {
     @Email
     private String email;
 
+    @Column(unique = true)
+    private String phoneNumber;
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     @NotNull
     @NotBlank
     private String address;
@@ -45,12 +56,14 @@ public class Customer extends DateAudit {
             String name,
             String email,
             String address,
+            String phoneNumber,
             Date dateOfBirth
         ) {
         this.name=name;
         this.email=email;
         this.address=address;
         this.dateOfBirth=dateOfBirth;
+        this.phoneNumber=phoneNumber;
 }
 
     public UUID getId() {
