@@ -23,12 +23,13 @@ public Account findAccountByAccountNumber(String accountNumber){
     return accountRepository.findByAccountNumber(accountNumber);
 }
 
-public void createAccount(String accountNumber, Customer customer){
+public Account createAccount(String accountNumber, Customer customer){
     Account newAccount = new Account();
     newAccount.setAccountNumber(accountNumber);
     newAccount.setCustomer(customer);
     newAccount.setBalance(0.0);
     accountRepository.save(newAccount);
+    return newAccount;
 }
 
     public Page<Account> getAccountsList(int page, int size) {

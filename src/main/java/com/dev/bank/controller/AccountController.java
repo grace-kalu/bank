@@ -22,14 +22,26 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping("/accounts")
-    public Page<Account> getAllAccounts(@PathVariable int page, @PathVariable int size) {
-        return accountService.getAccountsList(page, size);
+    public ResponseEntity<?> getAllAccounts(
+            @RequestParam(value = "page", defaultValue ="0") int page,
+            @RequestParam(value = "size", defaultValue ="3")  int size) {
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        accountService.getAccountsList(page, size)
+                        .getContent()
+                    );
+
     }
 
     @PostMapping("/accounts")
-    public void createAccount(@Valid @RequestBody String accountNumber,
+    public ResponseEntity<String> createAccount(@Valid @RequestBody String accountNumber,
                                  @Valid @RequestBody Customer customer) {
-        accountService.createAccount(accountNumber, customer);
+       Account newAccount = accountService.createAccount(accountNumber, customer);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(newAccount.getAccountNumber());
     }
 
     @PutMapping("/payments")

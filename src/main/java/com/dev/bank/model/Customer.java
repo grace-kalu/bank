@@ -44,6 +44,17 @@ public class Customer extends DateAudit {
 
     public Customer() {
     }
+    public Customer(
+            String name,
+            String email,
+            String address,
+            Date dateOfBirth
+        ) {
+        this.name=name;
+        this.email=email;
+        this.address=address;
+        this.dateOfBirth=dateOfBirth;
+}
 
     public UUID getId() {
         return id;
