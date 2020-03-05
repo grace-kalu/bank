@@ -8,5 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, UUID> {
-
+    Account findByAccountNumber(String accountNumber);
+    Account findAccountByCard(String pan);
 }

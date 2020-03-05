@@ -1,7 +1,7 @@
 package com.dev.bank.exception;
 
 
-import com.dev.bank.Response;
+import com.dev.bank.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

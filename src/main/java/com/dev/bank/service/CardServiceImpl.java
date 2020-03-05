@@ -21,10 +21,9 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public Card findByPAN(String PAN) {
-        Card card = cardRepository.findCardByPAN(PAN);
-        if(card != null){
+        Card card = cardRepository.findCardByPAN(PAN).orElseThrow(() -> new ResourceNotFoundException("CARD", "PAN", PAN));
+
             return card;
-        }
-        else throw new ResourceNotFoundException("Card", "Pan", PAN);
+
     }
 }
