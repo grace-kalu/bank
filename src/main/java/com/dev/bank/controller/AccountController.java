@@ -1,8 +1,10 @@
 package com.dev.bank.controller;
 
 import com.dev.bank.model.Account;
+import com.dev.bank.model.Card;
 import com.dev.bank.model.Customer;
 import com.dev.bank.repository.AccountRepository;
+import com.dev.bank.repository.CardRepository;
 import com.dev.bank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,8 @@ import javax.validation.Valid;
 public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private CardRepository cardRepository;
 
     @Autowired
     private AccountService accountService;
@@ -86,5 +90,17 @@ public class AccountController {
        accountRepository.save(account);
 
        return ResponseEntity.status(HttpStatus.OK).body("transaction completed");
+   }
+
+   public ResponseEntity<?> getAccountByCardNumber(String PAN){
+        Card card = cardRepository.findCardByPAN(PAN);
+        if(card==null){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("card number doesn't exist");
+        }
+        return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(accountService.findAccountByCardPAN(PAN));
    }
 }

@@ -14,4 +14,6 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
 
     Page<Account> findAll(Pageable pageReq);
 
+    Account findAccountByCard(String PAN);
+
 }

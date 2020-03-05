@@ -40,6 +40,12 @@ public Account createAccount(String accountNumber, Customer customer){
         Page<Account> accounts = accountRepository.findAll(pageReq);
         //return accounts.getContent();
         return accounts;
+
     }
+public Account findAccountByCardPAN(String PAN){
+    Account customerAccount = accountRepository.findAccountByCard(PAN);
+    return customerAccount;
+}
+
 
 }

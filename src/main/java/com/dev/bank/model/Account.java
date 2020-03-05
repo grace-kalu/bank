@@ -23,7 +23,6 @@ public class Account extends DateAudit {
 
     @NotNull
     @NotBlank
-
     @Size(min= 10, max= 10)
     private String accountNumber;
 
@@ -45,6 +44,7 @@ public class Account extends DateAudit {
         this();
         this.accountNumber = accountNumber;
         this.customer = customer;
+        this.card=null;
     }
 
     public UUID getId() {
@@ -85,5 +85,16 @@ public class Account extends DateAudit {
 
     public void setCard(Card card) {
         this.card = card;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", balance=" + balance +
+                ", customer=" + customer +
+                ", card=" + card +
+                '}';
     }
 }

@@ -33,7 +33,7 @@ public class Customer extends DateAudit {
     @NotBlank
     private String address;
 
-    @NotBlank
+
     @NotNull
     private Date dateOfBirth;
 
