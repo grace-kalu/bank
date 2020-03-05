@@ -3,9 +3,11 @@ package com.dev.bank.controller;
 import com.dev.bank.model.Account;
 import com.dev.bank.model.Customer;
 import com.dev.bank.repository.AccountRepository;
+import com.dev.bank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,35 +18,61 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private AccountService accountService;
+
     @GetMapping("/accounts")
-    public Page<Account> getAllAccounts(Pageable pageable) {
-        return accountRepository.findAll(pageable);
+    public Page<Account> getAllAccounts(@PathVariable int page, @PathVariable int size) {
+        return accountService.getAccountsList(page, size);
     }
 
     @PostMapping("/accounts")
-    public Account createAccount(@Valid @RequestBody Account account) {
-        return accountRepository.save(account);
+    public void createAccount(@Valid @RequestBody String accountNumber,
+                                 @Valid @RequestBody Customer customer) {
+        accountService.createAccount(accountNumber, customer);
     }
 
     @PutMapping("/payments")
-   public ResponseEntity<?> depositOrMakePayment(Account debitId, Account creditId, double payment){
+   public ResponseEntity<?> makePayment(@Valid @RequestBody String accountNumber,
+                                        @Valid @RequestBody Double amount){
 
-        debitId.setBalance(debitId.getBalance() - payment);
-       creditId.setBalance(creditId.getBalance() + payment);
+        Account account = accountService.findAccountByAccountNumber(accountNumber);
+        if (account == null){
+            return ResponseEntity.
+                    status(HttpStatus.NOT_FOUND).
+                    body("invalid account number");
+        }
+        if(amount <= 0 ){
+            return ResponseEntity.
+                    status(HttpStatus.BAD_REQUEST).
+                    body("transaction can't be processed");
+        }
 
-        accountRepository.save(creditId);
-        accountRepository.save(debitId);
-        return ResponseEntity.ok().build();
+        account.setBalance(account.getBalance() + amount);
+        accountRepository.save(account);
+
+        return ResponseEntity.status(HttpStatus.OK).body("transaction completed");
    }
+
    @PutMapping("/withdrawals")
-   public ResponseEntity<?> withdraw(Account accountToBeDebited, Account accountToBeCredited, double payment){
+   public ResponseEntity<?> withdraw(@Valid @RequestBody String accountNumber,
+                                     @Valid @RequestBody double amount){
+       Account account = accountService.findAccountByAccountNumber(accountNumber);
 
+       if (account == null){
+           return ResponseEntity.
+                   status(HttpStatus.NOT_FOUND).
+                   body("invalid account number");
+       }
+       if(account.getBalance() < amount ){
+           return ResponseEntity.
+                   status(HttpStatus.BAD_REQUEST).
+                   body("transaction can't be processed");
+       }
 
-       accountToBeDebited.setBalance(accountToBeDebited.getBalance() - payment);
-       accountToBeCredited.setBalance(accountToBeCredited.getBalance() + payment);
+       account.setBalance(account.getBalance() - amount);
+       accountRepository.save(account);
 
-       accountRepository.save(accountToBeCredited);
-       accountRepository.save(accountToBeDebited);
-       return ResponseEntity.ok().build();
+       return ResponseEntity.status(HttpStatus.OK).body("transaction completed");
    }
 }

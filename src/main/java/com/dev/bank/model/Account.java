@@ -41,6 +41,11 @@ public class Account extends DateAudit {
 
     public Account() {
     }
+    public Account(String accountNumber, Customer customer){
+        this();
+        this.accountNumber = accountNumber;
+        this.customer = customer;
+    }
 
     public UUID getId() {
         return id;
