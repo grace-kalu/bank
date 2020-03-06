@@ -12,10 +12,12 @@ import java.util.*;
 @Entity
 public class Customer extends DateAudit {
 
+
+
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id")
+    private Long id;
 
     @NotNull
     @NotBlank
@@ -45,11 +47,6 @@ public class Customer extends DateAudit {
     @NotNull
     private Date dateOfBirth;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Account> accounts;
-
-
     public Customer() {
     }
     public Customer(
@@ -66,11 +63,11 @@ public class Customer extends DateAudit {
         this.phoneNumber=phoneNumber;
 }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -106,15 +103,4 @@ public class Customer extends DateAudit {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public List<Account> getAccounts() {
-        return accounts == null ? null : new ArrayList<>(accounts);
-    }
-
-    public void setAccounts(List<Account> accounts) {
-        if (accounts == null) {
-            this.accounts = null;
-        } else {
-            this.accounts = Collections.unmodifiableList(accounts);
-        }
-    }
 }

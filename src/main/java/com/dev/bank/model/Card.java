@@ -9,13 +9,15 @@ import java.util.UUID;
 
 @Entity
 public class Card extends DateAudit{
+
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id")
+    private Long id;
 
     @NotNull
     @NotBlank
+    @Column(name = "cardNumber")
     private String PAN;
 
     @OneToOne

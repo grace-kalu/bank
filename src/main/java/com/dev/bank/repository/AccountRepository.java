@@ -9,12 +9,12 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, UUID> {
+public interface AccountRepository extends JpaRepository<Account, Long> {
     Account findByAccountNumber(String accountNumber);
 
     Page<Account> findAll(Pageable pageReq);
 
-    Account findAccountByCard(String PAN);
+    //Account findAccountByCard(String PAN);
 
     void deleteByAccountNumber(String accountNumber);
 

@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.UUID;
+//import java.util.Long;
 
 @Entity
 @Table(uniqueConstraints = {
@@ -16,10 +16,11 @@ import java.util.UUID;
 
 public class Account extends DateAudit {
 
+
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID" , strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id")
+    private Long id;
 
     @NotNull
     @NotBlank
@@ -34,9 +35,9 @@ public class Account extends DateAudit {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @JsonIgnore
+    /*@JsonIgnore
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Card card;
+    private Card card;*/
 
     @Column(nullable = true)
     private int token;
@@ -47,10 +48,10 @@ public class Account extends DateAudit {
         this();
         this.accountNumber = accountNumber;
         this.customer = customer;
-        this.card=null;
+        //this.card=null;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
@@ -62,7 +63,7 @@ public class Account extends DateAudit {
         this.token = token;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -90,14 +91,13 @@ public class Account extends DateAudit {
         this.customer = customer;
     }
 
-    public Card getCard() {
+   /* public Card getCard() {
         return card;
     }
 
     public void setCard(Card card) {
         this.card = card;
-    }
-
+    }*/
     @Override
     public String toString() {
         return "Account{" +
@@ -105,7 +105,6 @@ public class Account extends DateAudit {
                 ", accountNumber='" + accountNumber + '\'' +
                 ", balance=" + balance +
                 ", customer=" + customer +
-                ", card=" + card +
                 '}';
     }
 }

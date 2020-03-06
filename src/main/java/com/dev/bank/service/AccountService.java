@@ -44,7 +44,7 @@ public Account createAccount(String accountNumber, Customer customer){
     tokenOtp.setTokenexpiry(Instant.now().plusMillis(180000));
 
     tokenOtpRepository.save(tokenOtp);
-    tokenOtpService.deleteTokenAfterExpiry(tokenOtp);
+    //tokenOtpService.deleteTokenAfterExpiry(tokenOtp);
 
     accountRepository.save(newAccount);
     return newAccount;
@@ -59,10 +59,10 @@ public Page<Account> getAccountsList(int page, int size) {
         return accounts;
     }
 
-public Account findAccountByCardPAN(String PAN){
+/*public Account findAccountByCardPAN(String PAN){
     Account customerAccount = accountRepository.findAccountByCard(PAN);
     return customerAccount;
-}
+}*/
 
 
 }

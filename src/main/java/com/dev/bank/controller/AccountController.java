@@ -105,7 +105,7 @@ public class AccountController {
             @RequestBody String accountNumber
     ){
         TokenOtp tokenOtp = tokenOtpService.findByToken(token);
-        if (tokenOtp==null){
+        if (!Instant.now().isBefore(tokenOtp.getTokenexpiry())){
             accountRepository.deleteByAccountNumber(
                   //  tokenOtp.getAccountNumber()
                     accountNumber
@@ -291,7 +291,7 @@ public class AccountController {
     }
 
 
-   public ResponseEntity<?> getAccountByCardNumber(String PAN){
+/*   public ResponseEntity<?> getAccountByCardNumber(String PAN){
         Optional<Card> card = cardRepository.findCardByPAN(PAN);
         if(!card.isPresent()){
             return ResponseEntity
@@ -301,6 +301,6 @@ public class AccountController {
         return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(accountService.findAccountByCardPAN(PAN));
-   }
+   }*/
 }
 

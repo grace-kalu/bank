@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 public class TokenOtpService {
     @Autowired
     private TokenOtpRepository tokenOtpRepository;
-
+/*
     @Scheduled(fixedDelay = 300000)
     public void deleteTokenAfterExpiry(TokenOtp tokenOtp){
         tokenOtpRepository.deleteByToken(tokenOtp);
     }
+
+ */
     public TokenOtp findByToken(int token){
     TokenOtp tokenOtp =  tokenOtpRepository.findByToken(token);
     return tokenOtp;
