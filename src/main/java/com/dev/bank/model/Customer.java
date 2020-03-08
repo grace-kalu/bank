@@ -1,5 +1,6 @@
 package com.dev.bank.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -7,10 +8,11 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
-public class Customer extends DateAudit {
+public class Customer{
 
 
 
@@ -45,7 +47,8 @@ public class Customer extends DateAudit {
 
 
     @NotNull
-    private Date dateOfBirth;
+//    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern ="dd-MM-yyyy hh:mm:ss")
+    private String dateOfBirth;
 
     public Customer() {
     }
@@ -54,7 +57,7 @@ public class Customer extends DateAudit {
             String email,
             String address,
             String phoneNumber,
-            Date dateOfBirth
+            String dateOfBirth
         ) {
         this.name=name;
         this.email=email;
@@ -95,11 +98,11 @@ public class Customer extends DateAudit {
         this.address = address;
     }
 
-    public Date getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

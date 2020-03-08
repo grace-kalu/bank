@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
         @UniqueConstraint(columnNames = "accountNumber")
 })
 
-public class Account extends DateAudit {
+public class Account {
 
 
     @Id
@@ -39,8 +39,8 @@ public class Account extends DateAudit {
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private Card card;*/
 
-    @Column(nullable = true)
-    private int token;
+   /* @Column(nullable = true)
+    private int token;*/
 
     public Account() {
     }
@@ -55,13 +55,13 @@ public class Account extends DateAudit {
         return id;
     }
 
-    public int getToken() {
+    /*public int getToken() {
         return token;
     }
 
     public void setToken(int token) {
         this.token = token;
-    }
+    }*/
 
     public void setId(Long id) {
         this.id = id;

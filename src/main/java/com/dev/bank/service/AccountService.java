@@ -37,12 +37,10 @@ public Account createAccount(String accountNumber, Customer customer){
     newAccount.setBalance(0.0);
 
     TokenOtp tokenOtp = new TokenOtp(newAccount.getAccountNumber());
-
-   int token= TwillioSms.sendToken(customer.getPhoneNumber());
+    tokenOtp.setTokenexpiry(Instant.now().plusMillis(180000));
+    int token= TwillioSms.sendToken(customer.getPhoneNumber());
    tokenOtp.setToken(token);
 //    check and confirm if sms delivered
-    tokenOtp.setTokenexpiry(Instant.now().plusMillis(180000));
-
     tokenOtpRepository.save(tokenOtp);
     //tokenOtpService.deleteTokenAfterExpiry(tokenOtp);
 

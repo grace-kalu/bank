@@ -47,11 +47,13 @@ import com.dev.bank.service.CardService;
 import com.dev.bank.service.TokenOtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -118,95 +120,82 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body("User account is authenticated and verified");
     }
 
-    @PutMapping("/payments/bank")
-   public ResponseEntity<?> makePayment(@Valid @RequestBody String accountNumber,
-                                        @Valid @RequestBody Double amount,
-                                        @Valid @RequestBody String token){
-
+    @PostMapping("/transaction/credit")
+   public ResponseEntity<?> makePayment(@Valid @RequestBody HashMap<String, String> data){
+        String accountNumber = data.get("account-detail");
         Map<String, String> response= new HashMap<>();
-
+    if(accountNumber.length()==10){
         Account account = accountService.findAccountByAccountNumber(accountNumber);
         response.put("name", account.getCustomer().getName());
         response.put("account-number", accountNumber);
 
-        TokenOtp tokenOtp = tokenOtpService.findByToken(Integer.parseInt(token));
-        //check if token is valid
-        if (tokenOtp==null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-        //check if token has expired
-        if(!Instant.now().isBefore(tokenOtp.getTokenexpiry())){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
-        }
-
+        Double amount = Double.parseDouble((data.get("amount")));
         if(amount <= 0 ){
             return ResponseEntity.
                     status(HttpStatus.BAD_REQUEST).
                     body(response);
         }
-
         account.setBalance(account.getBalance() + amount);
         accountRepository.save(account);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
-   }
-
-    @PutMapping("/payments/card")
-    public ResponseEntity<?> makePaymentByCard(@Valid @RequestBody String cardNumber,
-                                         @Valid @RequestBody Double amount,
-                                         @Valid @RequestBody String token){
-        //check if token is valid
-        Map<String, String> response= new HashMap<>();
-
+    }else{
+        String cardNumber = data.get("account-detail");
         Account account = cardService.findByPAN(cardNumber).getAccount();
         response.put("name", account.getCustomer().getName());
-        response.put("account-number", account.getAccountNumber());
+        response.put("account-number", accountNumber);
 
-        //Check if token is valid
-        TokenOtp tokenOtp = tokenOtpService.findByToken(Integer.parseInt(token));
-        if (tokenOtp==null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-        //check if token has expired
-        if(!Instant.now().isBefore(tokenOtp.getTokenexpiry())){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
-        }
-
+        Double amount = Double.parseDouble((data.get("amount")));
         if(amount <= 0 ){
             return ResponseEntity.
                     status(HttpStatus.BAD_REQUEST).
                     body(response);
         }
-
         account.setBalance(account.getBalance() + amount);
         accountRepository.save(account);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-   @PutMapping("/withdrawals/bank")
-   public ResponseEntity<?> withdraw(@Valid @RequestBody String accountNumber,
-                                     @Valid @RequestBody double amount,
-                                     @Valid @RequestBody String token){
 
+        /*TokenOtp tokenOtp = tokenOtpService.findByToken(Integer.parseInt(token));
+        //check if token is valid
+        if (tokenOtp==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        //check if token has expired
+        if(!Instant.now().isBefore(tokenOtp.getTokenexpiry())){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
+        }*/
+
+   }
+
+
+   @PostMapping("/transaction/debit")
+   public ResponseEntity<?> withdraw(@Valid @RequestBody HashMap<String, String> data){
+        String accountNumber = data.get("account-detail");
        Map<String, String> response= new HashMap<>();
 
-       Account account = accountService.findAccountByAccountNumber(accountNumber);
-       response.put("name", account.getCustomer().getName());
-       response.put("account-number", accountNumber);
+        if (accountNumber.length()==10){
 
-       //Check if token is valid
-       TokenOtp tokenOtp = tokenOtpService.findByToken(Integer.parseInt(token));
-       if (tokenOtp==null){
-           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-       }
-       //check if token has expired
-       if(!Instant.now().isBefore(tokenOtp.getTokenexpiry())){
-           return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
-       }
+            Account account = accountService.findAccountByAccountNumber(accountNumber);
+            response.put("name", account.getCustomer().getName());
+            response.put("account-number", accountNumber);
 
-
-       if(account.getBalance() < amount ){
+            //Check if token is valid
+            TokenOtp tokenOtp = tokenOtpService.findByToken(Integer.parseInt(data.get("OTP")));
+            if (tokenOtp==null){
+                response.put("message", "invalid token");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+            //check if token has expired
+            if(!Instant.now().isBefore(tokenOtp.getTokenexpiry())){
+                response.put("message", "token has expired");
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
+        }
+            Double amount = Double.parseDouble((data.get("amount")));
+       if(account.getBalance() <  amount){
+           response.put("message", "insufficient funds");
            return ResponseEntity.
                    status(HttpStatus.BAD_REQUEST).
                    body(response);
@@ -214,48 +203,45 @@ public class AccountController {
 
        account.setBalance(account.getBalance() - amount);
        accountRepository.save(account);
-
+            response.put("message", "transaction completed");
        return ResponseEntity.status(HttpStatus.OK).body(response);
-   }
+   }else{
+            String cardNumber = accountNumber;
+            Account account = cardService.findByPAN(cardNumber).getAccount();
+            response.put("name", account.getCustomer().getName());
+            response.put("account-number", account.getAccountNumber());
 
-    @PutMapping("/withdrawals/card")
-    public ResponseEntity<?> withdrawByCard(@Valid @RequestBody String cardNumber,
-                                      @Valid @RequestBody double amount,
-                                      @Valid @RequestBody String token){
+            TokenOtp tokenOtp = tokenOtpService.findByToken(Integer.parseInt(data.get("OTP")));
+            if (tokenOtp==null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+            //check if token has expired
+            if(!Instant.now().isBefore(tokenOtp.getTokenexpiry())){
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
+            }
+            Double amount = Double.parseDouble((data.get("amount")));
+            if(account.getBalance() <  amount){
+                return ResponseEntity.
+                        status(HttpStatus.BAD_REQUEST).
+                        body(response);
+            }
 
-        Map<String, String> response= new HashMap<>();
+            account.setBalance(account.getBalance() - amount);
+            accountRepository.save(account);
 
-        Account account = cardService.findByPAN(cardNumber).getAccount();
-        response.put("name", account.getCustomer().getName());
-        response.put("account-number", account.getAccountNumber());
-
-        //Check if token is valid
-        TokenOtp tokenOtp = tokenOtpService.findByToken(Integer.parseInt(token));
-        if (tokenOtp==null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
-        //check if token has expired
-        if(!Instant.now().isBefore(tokenOtp.getTokenexpiry())){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
-        }
-
-        // business logic
-        if(account.getBalance() < amount ){
-            return ResponseEntity.
-                    status(HttpStatus.BAD_REQUEST).
-                    body(response);
-        }
-
-        account.setBalance(account.getBalance() - amount);
-        accountRepository.save(account);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
    @PostMapping("/transaction/verification")
-   public ResponseEntity<?> verifyTransactionRequest(@RequestBody String accountNumber,
-                                                     @RequestBody String cardNumber){
-        //validate accountnumber field since we are checking either account number or card details
+   public ResponseEntity<?> verifyTransactionRequest(@RequestBody HashMap<String, String> data){
+
+        String cardNumber = data.get("PAN");
+        String  accountNumber= data.get("account-number");
+       System.out.println(accountNumber);
+
+       //validate accountnumber field since we are checking either account number or card details
         if(accountNumber != null){
             //get the account
           Account account=  accountService.findAccountByAccountNumber(accountNumber);
@@ -267,9 +253,14 @@ public class AccountController {
             tokenOtp.setToken(token);
             tokenOtpRepository.save(tokenOtp);
 
-            return ResponseEntity.status(HttpStatus.OK).body("account exists, token sent to account's owner");
+            HashMap<String, String> response = new HashMap<>();
+
+            response.put("message", "account exists, token sent to account's owner");
+
+          return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(response);
+             // return new ResponseEntity<>("account exists, token sent to account's owner", HttpStatus.OK);
           }else{
-              return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("invalid accountnumber");
+              return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("account does not exist");
           }
         }
 
@@ -302,5 +293,40 @@ public class AccountController {
                     .status(HttpStatus.OK)
                     .body(accountService.findAccountByCardPAN(PAN));
    }*/
+/*
+@PutMapping("/payments/card")
+public ResponseEntity<?> makePaymentByCard(@Valid @RequestBody String cardNumber,
+                                           @Valid @RequestBody Double amount,
+                                           @Valid @RequestBody String token){
+    //check if token is valid
+    Map<String, String> response= new HashMap<>();
+
+    Account account = cardService.findByPAN(cardNumber).getAccount();
+    response.put("name", account.getCustomer().getName());
+    response.put("account-number", account.getAccountNumber());
+
+    //Check if token is valid
+    TokenOtp tokenOtp = tokenOtpService.findByToken(Integer.parseInt(token));
+    if (tokenOtp==null){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+    //check if token has expired
+    if(!Instant.now().isBefore(tokenOtp.getTokenexpiry())){
+        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
+    }
+
+    if(amount <= 0 ){
+        return ResponseEntity.
+                status(HttpStatus.BAD_REQUEST).
+                body(response);
+    }
+
+    account.setBalance(account.getBalance() + amount);
+    accountRepository.save(account);
+
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+}
+*/
+
 }
 

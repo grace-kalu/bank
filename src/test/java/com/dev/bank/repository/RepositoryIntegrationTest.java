@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,7 +26,7 @@ public class RepositoryIntegrationTest {
     @Test
     public void testCreateAccountsRepository(){
 
-        Customer a = new Customer("a", "a@a.com", "a", "+234 813 705 8179", new Date(10000000));
+        Customer a = new Customer("a", "a@a.com", "a", "+2348137058179", LocalDateTime.now().toString());
         Account a1 = new Account("1023456789", a);
         //assertNotNull(accountService.createAccount(a1.getAccountNumber(), a1.getCustomer()));
         //assertEquals("a", accountService.createAccount(a1.getAccountNumber(), a).getCustomer().getName());

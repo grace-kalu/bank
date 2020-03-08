@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
-public class Card extends DateAudit{
+public class Card{
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
