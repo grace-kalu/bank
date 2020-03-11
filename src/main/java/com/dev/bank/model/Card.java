@@ -1,6 +1,7 @@
 package com.dev.bank.model;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.CreditCardNumber;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

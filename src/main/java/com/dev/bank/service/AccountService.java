@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.HashMap;
 
 @Service
 public class AccountService {
@@ -29,21 +30,12 @@ public Account findAccountByAccountNumber(String accountNumber){
     return accountRepository.findByAccountNumber(accountNumber);
 }
 
-public Account createAccount(String accountNumber, Customer customer){
+public Account createAccount(HashMap<String, String> request, Customer customer){
     Account newAccount = new Account();
 
-    newAccount.setAccountNumber(accountNumber);
+    newAccount.setAccountNumber(request.get("accountNumber"));
     newAccount.setCustomer(customer);
     newAccount.setBalance(0.0);
-
-    TokenOtp tokenOtp = new TokenOtp(newAccount.getAccountNumber());
-    tokenOtp.setTokenexpiry(Instant.now().plusMillis(180000));
-    int token= TwillioSms.sendToken(customer.getPhoneNumber());
-   tokenOtp.setToken(token);
-//    check and confirm if sms delivered
-    tokenOtpRepository.save(tokenOtp);
-    //tokenOtpService.deleteTokenAfterExpiry(tokenOtp);
-
     accountRepository.save(newAccount);
     return newAccount;
 }

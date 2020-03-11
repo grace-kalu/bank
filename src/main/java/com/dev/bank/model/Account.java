@@ -35,6 +35,9 @@ public class Account {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isVerified;
+
     /*@JsonIgnore
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private Card card;*/

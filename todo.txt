@@ -1,0 +1,3 @@
+persist time to the database
+clean up token after it is created
+make sure token is delivered

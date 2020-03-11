@@ -1,7 +1,8 @@
 package com.dev.bank.model;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -11,36 +12,48 @@ public class TokenOtp {
     @Column(name="id")
     private Long id;
 
-    @Column(nullable = true)
-    private int token;
-
+    @Column(unique = true)
+    private String token;
     @Column
     private String accountNumber;
     @Column
-    private Instant tokencreated;
+    private Timestamp tokencreated;
     @Column
-    private Instant tokenexpiry;
+    private Timestamp tokenexpiry;
 
-    public Instant getTokenexpiry() {
+    public Timestamp getTokenexpiry() {
         return tokenexpiry;
     }
 
-    public void setTokenexpiry(Instant tokenexpiry) {
+    public void setTokenexpiry(Timestamp tokenexpiry) {
         this.tokenexpiry = tokenexpiry;
     }
 
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public Timestamp getTokencreated() {
+        return tokencreated;
+    }
+
+    public void setTokencreated(Timestamp tokencreated) {
+        this.tokencreated = tokencreated;
+    }
+
     public TokenOtp() {
-        this.tokencreated=Instant.now();
-        this.tokenexpiry=Instant.now().plusMillis(300000);
+
     }
     public TokenOtp(String accountNumber){
         this.accountNumber= accountNumber;
+        this.tokencreated= Timestamp.valueOf( LocalDateTime.now());
+        this.tokenexpiry=Timestamp.valueOf(LocalDateTime.now().plusMinutes(3L));
     }
-    public int getToken() {
+    public String getToken() {
         return token;
     }
 
-    public void setToken(int token) {
+    public void setToken(String token) {
         this.token = token;
     }
 

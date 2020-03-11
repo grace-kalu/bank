@@ -19,8 +19,8 @@ public class TwillioSms {
     // Create a phone number in the Twilio console
     public static final String TWILIO_NUMBER = "+18304444321";
 
-    public static int sendToken(String phoneNumber){
-        int token = generateToken();
+    public static String sendToken(String phoneNumber){
+        String token = generateToken();
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
         Message message = Message.creator(
                 new PhoneNumber(phoneNumber),
@@ -29,8 +29,9 @@ public class TwillioSms {
                 .create();
         return token;
     }
-    public static int generateToken(){
-        return new Random().nextInt(999999);
+    public static String generateToken(){
+        int token = new Random().nextInt(999999);
+        return String.valueOf(token);
     }
 
 }

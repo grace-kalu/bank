@@ -31,7 +31,7 @@ public class RepositoryIntegrationTest {
         //assertNotNull(accountService.createAccount(a1.getAccountNumber(), a1.getCustomer()));
         //assertEquals("a", accountService.createAccount(a1.getAccountNumber(), a).getCustomer().getName());
        assertNotNull(customerRepository.save(a));
-       assertNotNull(accountService.createAccount(a1.getAccountNumber(), a));
+       assertNotNull(accountRepository.save(a1));
        assertEquals("a", a1.getCustomer().getName());
     }
 
