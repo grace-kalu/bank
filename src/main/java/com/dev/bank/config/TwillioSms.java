@@ -12,12 +12,12 @@ public class TwillioSms {
 
     // Find your Account Sid and Token at twilio.com/console
 
-    public static final String ACCOUNT_SID="AC8bd1ffe1c29caf2fdc8930e81e0a0a46";
+    public static final String ACCOUNT_SID="AC46b0e0811ec122686342db24f00fc5e0";
 
-    public static final String AUTH_TOKEN= "8bc96dbc415f2be4692786fae349a84e";
+    public static final String AUTH_TOKEN= "9435f78dc68951b52078557a7d42d5ba";
 
     // Create a phone number in the Twilio console
-    public static final String TWILIO_NUMBER = "+18304444321";
+    public static final String TWILIO_NUMBER = "+12053780799";
 
     public static String sendToken(String phoneNumber){
         String token = generateToken();

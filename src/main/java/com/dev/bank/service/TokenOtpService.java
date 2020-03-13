@@ -17,7 +17,7 @@ public class TokenOtpService {
     @Autowired
     private TokenOtpRepository tokenOtpRepository;
 
-    @Scheduled(fixedDelay = 1500000, initialDelay = 1500000)
+    @Scheduled(fixedDelay = 5000000, initialDelay = 5000000)
     public void deleteTokenAfterExpiry( ){
         tokenOtpRepository.deleteAll();
     }

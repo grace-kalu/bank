@@ -29,3 +29,8 @@ build/
 
 ### VS Code ###
 .vscode/
+### trial files
+UtilController.java
+DemoController.java
+Demo.java
+DemoRepository.java
